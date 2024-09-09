@@ -3,6 +3,25 @@
 #include <ctime> 
 #include <SFML/Window.hpp>
 
+Direction getOppositeDirection(Direction d) {
+    Direction result;
+    switch (d) {
+        case Direction::DOWN:
+            result = Direction::UP;
+            break;
+        case Direction::UP:
+            result = Direction::DOWN;
+            break;
+        case Direction::LEFT:
+            result = Direction::RIGHT;
+            break;
+        case Direction::RIGHT:
+            result = Direction::LEFT;
+            break;
+    }
+    return result;
+}
+
 bool Point::operator == (const Point& other) {
     return x == other.x && y == other.y;
 }
@@ -40,8 +59,11 @@ const std::vector<std::vector<char>>& Game::getField() {
     return field;
 }
 
-void Game::setDirection(Direction d) {
-    snakeDirection = d;
+void Game::setDirection(Direction newDirection) {
+    if (DirectionChanged) return;
+    if (snake.size() > 1 && snakeDirection == getOppositeDirection(newDirection)) return;
+    snakeDirection = newDirection;
+    DirectionChanged = true;
 }
 
 Point Game::getNextPoint() {
@@ -90,6 +112,8 @@ void Game::moveSnake() {
         generateNewApple();
         events.push(Event::APPLE_WAS_EATEN);
     }
+
+    DirectionChanged = false;
 }
 
 bool Game::isHasEvent() {

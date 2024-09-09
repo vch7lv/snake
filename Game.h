@@ -10,6 +10,8 @@ enum class Direction {
     LEFT
 };
 
+Direction getOppositeDirection(Direction d);
+
 struct Point {
     std::size_t x;
     std::size_t y;
@@ -46,6 +48,8 @@ class Game
         bool IS_GAME_OVER = false;
 
         std::queue<Event> events;
+
+        bool DirectionChanged = false;
     private:
 
         void generateNewApple();
